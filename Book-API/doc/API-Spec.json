@@ -1,0 +1,378 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Books-API",
+    "version": "1.0.0",
+    "description": "OpenAPI for books RESTful API",
+    "termsOfService": "https://app.swaggerhub.com/eula",
+    "contact": {
+      "name": "Ari Muliansyah Manurung",
+      "email": "arimuliansyahmanurung@gmail.com"
+    },
+    "license": {
+      "name": "MIT License",
+      "url": "https://opensource.org/license/mit/"
+    }
+  },
+  "tags": [
+    {
+      "name": "Book",
+      "description": "Book operations"
+    },
+    {
+      "name": "Borrow",
+      "description": "borrow operations"
+    },
+    {
+      "name": "Member",
+      "description": "Member operations"
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://localhost:8000/api/v1"
+    }
+  ],
+  "paths": {
+    "/books": {
+      "get": {
+        "tags": ["Book"],
+        "summary": "Get all books",
+        "description": "Get all active book by default",
+        "responses": {
+          "200": {
+            "description": "Success get all books ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/books"
+                },
+                "examples": {
+                  "Success - bookshelf filled": {
+                    "description": "Success get all books",
+                    "value": {
+                      "status": "success",
+                      "data": {
+                        "books": [
+                          {
+                            "code": "JK-45",
+                            "title": "Harry Potter",
+                            "author": "J.K Rowling",
+                            "stock": 1
+                          },
+                          {
+                            "code": "SHR-1",
+                            "title": "A Study in Scarlet",
+                            "author": "Arthur Conan Doyle",
+                            "stock": 1
+                          },
+                          {
+                            "code": "TW-11",
+                            "title": "Twilight",
+                            "author": "Stephenie Meyer",
+                            "stock": 1
+                          },
+                          {
+                            "code": "HOB-83",
+                            "title": "The Hobbit, or There and Back Again",
+                            "author": "J.R.R. Tolkien",
+                            "stock": 1
+                          },
+                          {
+                            "code": "NRN-7",
+                            "title": "The Lion, the Witch and the Wardrobe",
+                            "author": "C.S. Lewis",
+                            "stock": 1
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "Success - bookshelf is empty": {
+                    "description": "Success get all books",
+                    "value": {
+                      "status": "success",
+                      "data": {
+                        "books": []
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/members": {
+      "get": {
+        "tags": ["Member"],
+        "summary": "Get all members",
+        "description": "Get all active member by default",
+        "responses": {
+          "200": {
+            "description": "Success get all members ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/member"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Member"],
+        "summary": "Add new member",
+        "description": "Add new member",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/member"
+              },
+              "examples": {
+                "member": {
+                  "value": {
+                    "code": "M-123",
+                    "name": "Ari"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success add new member",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/member"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/borrows": {
+      "post": {
+        "tags": ["Borrow"],
+        "summary": "Borrow book",
+        "description": "borrowing submission",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/borrow"
+              },
+              "examples": {
+                "borrow": {
+                  "value": {
+                    "code_member": "M-123",
+                    "code_book": "JK-45",
+                    "quantity": 1,
+                    "time_borrow": "2022-01-01",
+                    "time_return": null
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success borrow book",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/borrow"
+                },
+                "examples": {
+                  "borrow": {
+                    "value": {
+                      "status": "success",
+                      "data": {
+                        "borrow": [
+                          {
+                            "code_member": "M-123",
+                            "code_book": "JK-45",
+                            "quantity": 1,
+                            "time_borrow": "2022-01-01",
+                            "time_return": null
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "error1": {
+                    "value": {
+                      "status": "fail",
+                      "message": "Member can only borrow 2 books"
+                    }
+                  },
+                  "error2": {
+                    "value": {
+                      "status": "fail",
+                      "message": "Book is not available"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "error": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "books": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "books": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "author": {
+                      "type": "string"
+                    },
+                    "stock": {
+                      "type": "integer",
+                      "format": "int32"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "member": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "members": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "borrow": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "borrow": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "code_member": {
+                      "type": "string"
+                    },
+                    "code_book": {
+                      "type": "string"
+                    },
+                    "quantity": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "time_borrow": {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "time_return": {
+                      "type": "string",
+                      "format": "date"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

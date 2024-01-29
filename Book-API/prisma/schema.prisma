@@ -1,0 +1,41 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Member {
+  code   String   @id @db.VarChar(100)
+  name   String   @db.VarChar(100)
+  borrow Borrow[]
+
+  @@map("members")
+}
+
+model Book {
+  code   String   @id @db.VarChar(100)
+  title  String   @db.VarChar(100)
+  author String   @db.VarChar(100)
+  stock  Int      @db.Int
+  borrow Borrow[]
+
+  @@map("books")
+}
+
+model Borrow {
+  code        String    @id @db.VarChar(100)
+  code_member String    @db.VarChar(100)
+  code_book   String    @db.VarChar(100)
+  time_borrow DateTime  @default(now())
+  time_return DateTime? @db.DateTime()
+  member      Member    @relation(fields: [code_member], references: [code])
+  book        Book      @relation(fields: [code_book], references: [code])
+
+  @@map("borrows")
+}
